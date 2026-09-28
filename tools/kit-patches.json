@@ -1,0 +1,210 @@
+{
+  "formatVersion": 1,
+  "packageVersion": "5.0",
+  "patches": [
+    {
+      "path": "Assets/2DGamekit/Scripts/Character/MonoBehaviours/InputComponent.cs",
+      "beforeSha256": "a218f287e3a5b05c0850c7e0e95e8bef3482c39f841e8a7947b4e1ff6e03a37e",
+      "afterSha256": "e0cc283b2d38000ffdcd6faa0aa0872e1ef3903e5b9df63e4c978a5d01582594",
+      "operations": [
+        {
+          "start": 13,
+          "remove": [],
+          "add": [
+            "\n",
+            "            [SerializeField] string m_ActionName;\n",
+            "            [SerializeField] string m_KeyboardBinding;\n",
+            "            [SerializeField] string m_GamepadBinding;\n"
+          ]
+        },
+        {
+          "start": 34,
+          "remove": [
+            "                action = new InputAction(actionName, InputActionType.Button);\n",
+            "                action.AddBinding($\"<Keyboard>/{keyboardKey.ToString().ToLower()}\");\n",
+            "                if (!string.IsNullOrEmpty(gamepadBinding))\n",
+            "                    action.AddBinding(gamepadBinding);\n"
+          ],
+          "add": [
+            "                // Unity can run serialized field constructors before InputSystem.manager exists.\n",
+            "                // Store plain binding data here; create actions from PlayerInput.Awake/OnEnable.\n",
+            "                m_ActionName = actionName;\n",
+            "                m_KeyboardBinding = $\"<Keyboard>/{keyboardKey.ToString().ToLowerInvariant()}\";\n",
+            "                m_GamepadBinding = gamepadBinding;\n",
+            "            }\n",
+            "\n",
+            "            void EnsureAction()\n",
+            "            {\n",
+            "                if (action != null && action.bindings.Count > 0)\n",
+            "                    return;\n",
+            "                action = new InputAction(m_ActionName, InputActionType.Button);\n",
+            "                if (!string.IsNullOrEmpty(m_KeyboardBinding))\n",
+            "                    action.AddBinding(m_KeyboardBinding);\n",
+            "                if (!string.IsNullOrEmpty(m_GamepadBinding))\n",
+            "                    action.AddBinding(m_GamepadBinding);\n"
+          ]
+        },
+        {
+          "start": 53,
+          "remove": [],
+          "add": [
+            "                EnsureAction();\n"
+          ]
+        },
+        {
+          "start": 117,
+          "remove": [
+            "            public void EnableAction() => action?.Enable();\n"
+          ],
+          "add": [
+            "            public void EnableAction()\n",
+            "            {\n",
+            "                EnsureAction();\n",
+            "                action.Enable();\n",
+            "            }\n"
+          ]
+        },
+        {
+          "start": 125,
+          "remove": [],
+          "add": [
+            "\n",
+            "            [SerializeField] string m_ActionName;\n",
+            "            [SerializeField] string m_PositiveKeyboardBinding;\n",
+            "            [SerializeField] string m_NegativeKeyboardBinding;\n",
+            "            [SerializeField] string m_PositiveGamepadBinding;\n",
+            "            [SerializeField] string m_NegativeGamepadBinding;\n"
+          ]
+        },
+        {
+          "start": 138,
+          "remove": [
+            "                action = new InputAction(actionName, InputActionType.Value, expectedControlType: \"Axis\");\n",
+            "                \n",
+            "                var composite = action.AddCompositeBinding(\"1DAxis\");\n",
+            "                composite.With(\"Positive\", $\"<Keyboard>/{positiveKey.ToString().ToLower()}\");\n",
+            "                composite.With(\"Negative\", $\"<Keyboard>/{negativeKey.ToString().ToLower()}\");\n"
+          ],
+          "add": [
+            "                // Binding construction must happen on the main thread after Input System startup.\n",
+            "                m_ActionName = actionName;\n",
+            "                m_PositiveKeyboardBinding = $\"<Keyboard>/{positiveKey.ToString().ToLowerInvariant()}\";\n",
+            "                m_NegativeKeyboardBinding = $\"<Keyboard>/{negativeKey.ToString().ToLowerInvariant()}\";\n",
+            "                m_PositiveGamepadBinding = gamepadPositiveBinding;\n",
+            "                m_NegativeGamepadBinding = gampadNegativeBinding;\n",
+            "            }\n"
+          ]
+        },
+        {
+          "start": 144,
+          "remove": [
+            "                if (!string.IsNullOrEmpty(gamepadPositiveBinding))\n",
+            "                    action.AddBinding(gamepadPositiveBinding);\n"
+          ],
+          "add": [
+            "            void EnsureAction()\n",
+            "            {\n",
+            "                if (action != null && action.bindings.Count > 0)\n",
+            "                    return;\n",
+            "                action = new InputAction(m_ActionName, InputActionType.Value, expectedControlType: \"Axis\");\n",
+            "                action.AddCompositeBinding(\"1DAxis\")\n",
+            "                    .With(\"Positive\", m_PositiveKeyboardBinding)\n",
+            "                    .With(\"Negative\", m_NegativeKeyboardBinding);\n",
+            "\n",
+            "                if (!string.IsNullOrEmpty(m_PositiveGamepadBinding) && !string.IsNullOrEmpty(m_NegativeGamepadBinding))\n",
+            "                {\n",
+            "                    action.AddCompositeBinding(\"1DAxis\")\n",
+            "                        .With(\"Positive\", m_PositiveGamepadBinding)\n",
+            "                        .With(\"Negative\", m_NegativeGamepadBinding);\n",
+            "                }\n",
+            "                else if (!string.IsNullOrEmpty(m_PositiveGamepadBinding))\n",
+            "                    action.AddBinding(m_PositiveGamepadBinding);\n"
+          ]
+        },
+        {
+          "start": 153,
+          "remove": [],
+          "add": [
+            "                    ReceivingInput = false;\n"
+          ]
+        },
+        {
+          "start": 159,
+          "remove": [],
+          "add": [
+            "                EnsureAction();\n"
+          ]
+        },
+        {
+          "start": 190,
+          "remove": [
+            "                action?.Enable(); \n"
+          ],
+          "add": [
+            "                EnsureAction();\n",
+            "                action.Enable();\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Assets/2DGamekit/Scripts/Character/MonoBehaviours/EnemyBehaviour.cs",
+      "beforeSha256": "33d43476763b60b2bc317ad5085506024259db2969a155198b09e2e72fbabd4e",
+      "afterSha256": "928b8908e8693862411a1562939eefa99b4c20239fb55583de365ee7ae65eb25",
+      "operations": [
+        {
+          "start": 22,
+          "remove": [],
+          "add": [
+            "        [Tooltip(\"Optional upper limit for forward wall probes; zero keeps the original Kit distance. Does not change ledge detection.\")]\n",
+            "        public float obstacleLookAheadLimit;\n"
+          ]
+        },
+        {
+          "start": 177,
+          "remove": [],
+          "add": [
+            "            if (obstacleLookAheadLimit > 0f) forwardDistance = Mathf.Min(forwardDistance, obstacleLookAheadLimit);\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Assets/2DGamekit/Scripts/Character/MonoBehaviours/PlayerCharacter.cs",
+      "beforeSha256": "2bba3a925d103cc2b0f0382aeb96a3c5234a56f1d74336cd8915dad9f879b165",
+      "afterSha256": "e4a8a415b9f23256961608ce1520852a8c312c87f1e123ea4f3456efe421b57f",
+      "operations": [
+        {
+          "start": 654,
+          "remove": [],
+          "add": [
+            "        // Alternative projectiles can reuse the stock gun animations without supplying\n",
+            "        // ranged input or starting the normal bullet-spawning coroutine.\n",
+            "        public void PlayRangedAttackAnimation()\n",
+            "        {\n",
+            "            m_Animator.SetBool(m_HashHoldingGunPara, true);\n",
+            "            m_HoldingGunTimeRemaining = holdingGunTimeoutDuration;\n",
+            "        }\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "Assets/2DGamekit/Art/Materials/VFX/Ellen/Bullet.mat",
+      "beforeSha256": "e6ff3a68602a79ff334c7a2f7ebb8cda6a97705758609fda171fab3075f6553b",
+      "afterSha256": "a875764f554c8de5a8da32f6dd42f32ab74ec7f737c3f97ccb3f60f1c2205453",
+      "operations": [
+        {
+          "start": 24,
+          "remove": [
+            "  m_CustomRenderQueue: 2450\n"
+          ],
+          "add": [
+            "  m_CustomRenderQueue: 3000\n"
+          ]
+        }
+      ]
+    }
+  ]
+}

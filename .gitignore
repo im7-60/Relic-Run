@@ -1,0 +1,50 @@
+# Unity-generated data
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Bb]uild/
+/[Bb]uilds/
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+/ArtifactDB/
+
+# Acquire this dependency through Unity; see docs/SETUP.md.
+/Assets/2DGamekit/
+/Assets/2DGamekit.meta
+*.unitypackage
+
+# IDE and local machine files
+/.vs/
+/.vscode/
+/.idea/
+*.csproj
+*.sln
+*.slnx
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.opendb
+*.VC.db
+.DS_Store
+Thumbs.db
+
+# Build products and local credentials
+*.apk
+*.aab
+*.app
+*.log
+.env
+.env.*
+*.pfx
+*.p12
+*.keystore
+__pycache__/
+*.pyc
+
+# Unity build debug backups are not project source.
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+*_BurstDebugInformation_DoNotShip/
